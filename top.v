@@ -30,13 +30,14 @@ module jogodavelha(KEY, SW, board, LEDR, winA, winB, draw, gameover, player);
 
         else begin
 
-            if ((SW > 9) || (position == 0)) begin
+            if (!gameover) begin
+
+            if ((SW > 9) || (SW == 0)) begin
                 //erro
             end
 
             else begin
 
-                player <= !player; // serve para alterar jogadores
 
                 // Definição do switch como posição do board
                 position = (SW * 2 + player) - 2;
@@ -47,16 +48,12 @@ module jogodavelha(KEY, SW, board, LEDR, winA, winB, draw, gameover, player);
                 aux = player ? position - 1 : position + 1;
 
                 if (board[position] || board[aux]) begin
-                    player <= !player; // volta a jogada
                     //mensagem de erro
                 end
                 else begin //se a casa jogada nao esta preenchida
                     board[position] = 1;
-                end
-
-                /* Verificação da condição de vitória */
-
-                if ( /*linhas p0*/ (board[0]&board[2]&board[4]) || (board[6]&board[8]&board[10]) || (board[12]&board[14]&board[16])
+                    player <= !player;
+                    if ( /*linhas p0*/ (board[0]&board[2]&board[4]) || (board[6]&board[8]&board[10]) || (board[12]&board[14]&board[16])
                      /*colunas p0*/ || (board[0]&board[6]&board[12]) || (board[2]&board[8]&board[14]) || (board[4]&board[10]&board[16])
                      /*diagonais p0*/ || (board[0]&board[8]&board[16]) || (board[6]&board[10]&board[14])
                    ) begin
@@ -77,9 +74,15 @@ module jogodavelha(KEY, SW, board, LEDR, winA, winB, draw, gameover, player);
                     draw <= 1;
                     gameover <= 1;
                 end
+                end
+
+                /* Verificação da condição de vitória */
+
+                
 
             end
         end
+    end
     end
 
     always @(*) begin
